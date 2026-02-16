@@ -206,7 +206,7 @@ def delete(id):
     cursor.execute("DELETE FROM registrations WHERE id=%s", (id,))
     db.commit()
 
-    Flask("Registration deleted", "danger")
+    flash("Registration deleted", "danger")
     return redirect("/dashboard")
 
 # ================= ATTENDANCE =================
