@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PGP Symposium 2026</title>
+    <link rel="icon" href="static/uploads/Screenshot 2025-11-08 195714.png" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="static/css/style.css">
+    <style>
+
+/* =========================================
+   🌌 EEE DARK POWER BACKGROUND
+========================================= */
+
+body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg,#000000,#020d1f,#000814);
+    color:white;
+    overflow-x:hidden;
+}
+
+/* =========================================
+   ⚡ POWER GRID BACKGROUND
+========================================= */
+
+.eee-bg{
+    position:fixed;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    z-index:-1;
+    overflow:hidden;
+}
+
+/* Grid lines */
+.eee-bg::before{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:100%;
+
+    background-image:
+        linear-gradient(rgba(0,255,255,0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.15) 1px, transparent 1px);
+
+    background-size:80px 80px;
+    animation:gridMove 20s linear infinite;
+}
+
+/* Grid animation */
+@keyframes gridMove{
+    from{
+        transform:translate(0,0);
+    }
+    to{
+        transform:translate(80px,80px);
+    }
+}
+
+/* =========================================
+   ⚡ ELECTRIC CURRENT FLOW LINES
+========================================= */
+
+.current{
+    position:absolute;
+    width:2px;
+    height:200%;
+    background:linear-gradient(to bottom,transparent,(212, 211, 214),transparent);
+    animation:currentFlow 5s linear infinite;
+    opacity:0.7;
+}
+
+.current:nth-child(1){ left:20%; animation-delay:0s; }
+.current:nth-child(2){ left:40%; animation-delay:1s; }
+.current:nth-child(3){ left:60%; animation-delay:2s; }
+.current:nth-child(4){ left:80%; animation-delay:3s; }
+
+@keyframes currentFlow{
+    from{ top:-100%; }
+    to{ top:100%; }
+}
+
+/* =========================================
+   🔵 FLOATING ELECTRIC PARTICLES
+========================================= */
+
+.spark{
+    position:absolute;
+    width:6px;
+    height:6px;
+    background:cyan;
+    border-radius:50%;
+    box-shadow:0 0 10px cyan,0 0 20px cyan;
+    animation:sparkFloat 8s linear infinite;
+}
+
+.spark:nth-child(5){ left:10%; animation-delay:0s; }
+.spark:nth-child(6){ left:30%; animation-delay:2s; }
+.spark:nth-child(7){ left:50%; animation-delay:4s; }
+.spark:nth-child(8){ left:70%; animation-delay:1s; }
+.spark:nth-child(9){ left:90%; animation-delay:3s; }
+
+@keyframes sparkFloat{
+    0%{
+        bottom:-10%;
+        opacity:0;
+    }
+    50%{
+        opacity:1;
+    }
+    100%{
+        bottom:110%;
+        opacity:0;
+    }
+}
+
+/* =========================================
+   ⚡ HERO ELECTRIC GLOW
+========================================= */
+
+.hero{
+    position:relative;
+    text-align:center;
+    padding:60px 20px;
+    overflow:hidden;
+}
+
+.hero::before{
+    content:"";
+    position:absolute;
+    width:400px;
+    height:400px;
+    background:radial-gradient(circle,cyan,transparent 70%);
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    animation:heroPulse 4s infinite;
+}
+
+@keyframes heroPulse{
+    0%,100%{
+        transform:translate(-50%,-50%) scale(1);
+        opacity:0.6;
+    }
+    50%{
+        transform:translate(-50%,-50%) scale(1.4);
+        opacity:1;
+    }
+}
+
+.hero *{
+    position:relative;
+    z-index:2;
+}
+
+</style>
+<style>
+
+/* =========================================
+   🌟 GLOBAL FONT STYLE
+========================================= */
+
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color:white;
+}
+
+/* =========================================
+   ⚡ HERO MAIN TITLE
+   POWERHOUSE SYMPOSIUM
+========================================= */
+
+.hero h2{
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+
+    background: linear-gradient(90deg, cyan, #00ffe5, cyan);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow:
+        0 0 10px cyan,
+        0 0 20px cyan,
+        0 0 40px cyan;
+
+    animation: glowText 2s ease-in-out infinite alternate;
+}
+
+/* Glow animation */
+@keyframes glowText{
+    from{
+        text-shadow:
+            0 0 5px cyan,
+            0 0 10px cyan;
+    }
+    to{
+        text-shadow:
+            0 0 20px cyan,
+            0 0 40px cyan;
+    }
+}
+
+/* =========================================
+   ⚡ SUB TITLES
+========================================= */
+
+.hero h1,
+.hero h4{
+    letter-spacing: 2px;
+    text-transform: uppercase;
+
+    text-shadow:
+        0 0 5px #00eaff,
+        0 0 10px #00eaff;
+}
+
+/* Date style */
+.hero h3{
+    font-weight: bold;
+    color: #00ffe5;
+    text-shadow: 0 0 10px cyan;
+}
+
+/* =========================================
+   📌 SECTION TITLES
+   Technical / Non-Technical
+========================================= */
+
+.section-title{
+    font-style="Forte";
+    font-size: 36px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-align: center;
+    margin-bottom: 30px;
+
+    background: linear-gradient(90deg,#00f7ff,#00ffa6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    position: relative;
+}
+
+/* Underline glow */
+.section-title::after{
+    content:"";
+    width:120px;
+    height:3px;
+    background:cyan;
+    display:block;
+    margin:10px auto;
+    box-shadow:0 0 10px cyan;
+}
+
+/* =========================================
+   🧾 EVENT CARD TITLES
+========================================= */
+
+.tech-card h4{
+    font-style="Forte";
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: cyan;
+
+    text-shadow:0 0 8px cyan;
+}
+
+/* =========================================
+   🧠 NAVBAR BRAND STYLE
+========================================= */
+
+.navbar-brand{
+    font-style="Forte";
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+
+    background: linear-gradient(90deg,#00f7ff,#00ffa6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+/* REGISTRATION FORM */ .register-box{ background: ; padding:30px; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.3); margin:40px auto; max-width:700px; } .register-box h2{text-align:center;color:#3848dd;margin-bottom:25px;} label{font-weight:600;margin-top:10px;} .form-control,.form-select{border-radius:8px;} .payment-proof{display:none;} .btn-submit{ background:#1d2671; color:white; padding:12px; font-size:18px; border-radius:10px; } .btn-submit:hover{background:#c33764;color:white;} footer{ background:#003973; color:white; padding:15px; text-align:center; font-size:14px; } @media(max-width:768px){ .hero h1{font-size:28px;} .hero h2{font-size:24px;} .section-title{font-size:24px;} }
+/* =========================================
+   📞 CONTACT TITLE
+========================================= */
+
+.contact-section h2{
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: cyan;
+    text-shadow:0 0 10px cyan;
+}
+</style>
+
+</head>
+
+<body>
+<!-- EEE Animated Background -->
+<div class="eee-bg">
+
+    <!-- Current flow lines -->
+    <div class="current"></div>
+    <div class="current"></div>
+    <div class="current"></div>
+    <div class="current"></div>
+
+    <!-- Electric sparks -->
+    <div class="spark"></div>
+    <div class="spark"></div>
+    <div class="spark"></div>
+    <div class="spark"></div>
+    <div class="spark"></div>
+
+</div>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <img src="static/uploads/Screenshot 2025-11-08 195714.png" alt="pgpcet" height="25" width="25">
+        <a class="navbar-brand" href="#">PGP Symposium</a>
+    
+        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#events">Events</a></li>
+                <li class="nav-item"><a class="nav-link" href="#register">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <h1>PGP College of Engineering and Technology</h1>
+    <h4>Namakkal</h4>
+    <p class="mt-3">National Level Technical Symposium</p>
+    <h4>Department of ELECTRICAL & ELECTRONIC ENGINEERING</h4>
+    <h2>POWERHOUSE SYMPOSIUM 2K26</h2>
+    <h3>ON 11-03-2026</h3>
+    <p class="mt-3"><strong>Registration Fee: ₹200 only</strong></p>
+</section>
+
+<!-- TECHNICAL EVENTS -->
+<section id="events" class="technical-bg">
+    <div class="container">
+        <h2 class="section-title">Technical Events</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="tech-card">
+                    <h4>Paper Presentation</h4>
+                    <ul>
+                        <li>Innovative ideas</li>
+                        <li>Latest technologies</li>
+                        <li>Team size: 2</li>
+                        <li>Time: 10 mins</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="tech-card">
+                    <h4>TECHNICAL CONNECTIONS </h4>
+                    <ul>
+                        <li>Live </li>
+                        <li>Hardware / Software</li>
+                        <li>Team size: 3</li>
+                        <li>Best project award</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="tech-card">
+                    <h4>Circuit Debugging</h4>
+                    <ul>
+                        <li>Find & fix errors</li>
+                        <li>MAT lab</li>
+                        <li>Individual event</li>
+                        <li>Time based scoring</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="tech-card">
+                    <h4>Projects Presentation</h4>
+                    <ul>
+                        <li>Team size: 3</li>
+                        <li>Solo / Team</li>
+                        <li>Exciting prizes</li>
+                    </ul>
+                </div>
+            </div>
+            
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- NON TECH EVENTS -->
+<section class="container my-5">
+    <h2 class="section-title">Non-Technical Events</h2>
+    <div class="row g-4">
+        <div class="col-md-3"><div class="nontech-card"><h4>Free Fire</h4></div></div>
+        <div class="col-md-3"><div class="nontech-card"><h4>Memory mess</h4></div></div>
+        <div class="col-md-3"><div class="nontech-card"><h4>Fun Quiz</h4></div></div>
+        <div class="col-md-3"><div class="nontech-card"><h4>Short Film & Photography</h4></div></div>
+    </div>
+</section>
+
+<!-- REGISTRATION FORM -->
+<section id="register" class="my-5">
+    <div class="register-box">
+        <h2>Register for Symposium</h2>
+        <div id="errorBox" style="display:none; color:red; font-weight:bold; margin-bottom:12px;"></div>
+        <form method="post" enctype="multipart/form-data" onsubmit="return validatePayment()">
+            <label>Student Name</label>
+            <input type="text" class="form-control" name="student_name" required>
+
+            <label>College Name</label>
+            <input type="text" class="form-control" name="college" required>
+
+            <label>Register Number</label>
+            <input type="text" class="form-control" name="reg_no" required>
+
+            <label>Email</label>
+            <input type="email" class="form-control" name="email" required>
+
+            <label>Contact Number</label>
+            <input type="number" class="form-control" name="number" required>
+
+            <label>Department</label>
+            <select class="form-select" name="department" required>
+                <option value="">-- Select Department --</option>
+                <option>CSE</option>
+                <option>ECE</option>
+                <option>EEE</option>
+                <option>MECH</option>
+                <option>CIVIL</option>
+                <option>IT</option>
+                <option>OTHERS</option>
+            </select>
+
+            <label>Year</label>
+            <select class="form-select" name="year" required>
+                <option value="">-- Select Year --</option>
+                <option>1st Year</option>
+                <option>2nd Year</option>
+                <option>3rd Year</option>
+                <option>4th Year</option>
+            </select>
+
+            <label>Technical Event</label>
+            <select class="form-select" name="tech_event">
+                <option value="">-- Select Technical Event --</option>
+                <option>Paper Presentation</option>
+                <option>Project Expo</option>
+                <option>Debugging</option>
+                <option>Code Hunt</option>
+                <option>Technical Quiz</option>
+            </select>
+
+            <label>Non-Technical Event</label>
+            <select class="form-select" name="nontech_event">
+                <option value="">-- Select Non-Technical Event --</option>
+                <option>Photography</option>
+                <option>Treasure Hunt</option>
+                <option>Fun Games</option>
+                <option>Short Film</option>
+            </select>
+
+            <label>Payment Method</label>
+            <select class="form-select" name="payment_method" onchange="toggleProof(this.value)" required>
+                <option value="">-- Select Payment Method --</option>
+                <option value="GPay">GPay</option>
+                <option value="PhonePe">PhonePe</option>
+                <option value="Paytm">Paytm</option>
+                <option value="Hand Cash">Hand Cash</option>
+            </select>
+
+            <div class="payment-proof mt-2" id="proofBox">
+                <label>Upload Payment Screenshot</label>
+                <input type="file" class="form-control" name="payment_proof" accept="image/*">
+            </div>
+
+            <div id="qrBox" style="display:none; text-align:center; margin-top:15px;">
+                <p><strong>Scan & Pay ₹200</strong></p>
+                <img src="static/uploads/qr_code.png" width="200">
+            </div>
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn-submit">Submit Registration</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+
+
+<!-- CONTACT SECTION -->
+ <center>
+<section id="contact" class="contact-section">
+    <h2>Contact Us</h2>
+    <p>📍 PGP College of Engineering and Technology, Namakkal, Tamil Nadu, India</p>
+    <p>📞 Phone: +91 7010989060 & +91 9385986607</p>
+    <p>✉ Email: eeespartans08@gmail.com</p>
+    <p>🌐 Website: www.pgpcet.ac.in</p>
+</section>
+</center>
+
+<!-- FOOTER -->
+<footer>
+    © 2026 PGP College of Engineering and Technology | Namakkal
+</footer>
+
+<!-- JS -->
+<script>
+function toggleProof(value){
+    let proof = document.getElementById("proofBox");
+    let qr = document.getElementById("qrBox");
+
+    let val = value.toLowerCase();
+    if(val === "gpay" || val === "phonepe" || val === "paytm"){
+        proof.style.display = "block";
+        qr.style.display = "block";
+    } else if(val === "hand cash" || val === ""){
+        proof.style.display = "none";
+        qr.style.display = "none";
+    } else {
+        proof.style.display = "block";
+        qr.style.display = "none";
+    }
+}
+</script>
+<script>
+function validatePayment(){
+    const paymentMethod = document.querySelector('[name="payment_method"]').value;
+    const proof = document.querySelector('[name="payment_proof"]').value;
+    const errorBox = document.getElementById("errorBox");
+
+    errorBox.style.display = "none";
+    errorBox.innerHTML = "";
+
+    if(["GPay","PhonePe","Paytm"].includes(paymentMethod)){
+        if(proof === ""){
+            errorBox.innerHTML = "❌ You must add payment proof";
+            errorBox.style.display = "block";
+            return false; // ⛔ STOP submit
+        }
+    }
+    return true; // ✅ allow submit
+}
+</script>
+
+</body>
+</html>

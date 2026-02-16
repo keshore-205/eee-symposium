@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Admin Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+    background:#f4f6f9;
+    font-family:Segoe UI, Tahoma, sans-serif;
+    padding:20px;
+}
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.logout{
+    background:red;
+    color:white;
+    padding:8px 15px;
+    border-radius:6px;
+    text-decoration:none;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+    background:white;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+th,td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+    text-align:center;
+    font-size:14px;
+}
+th{
+    background:#1d2671;
+    color:white;
+}
+.status-pending{color:orange;font-weight:bold;}
+.status-verified{color:green;font-weight:bold;}
+.verify-btn{
+    background:green;
+    color:white;
+    padding:5px 10px;
+    text-decoration:none;
+    border-radius:5px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+    <h2>Admin Dashboard</h2>
+    <a href="/logout" class="logout">Logout</a>
+</div>
+
+<!-- 🔍 SEARCH -->
+
+<form method="post" style="margin:15px 0; display:flex; gap:10px;">
+    <input 
+        type="text" 
+        name="search" 
+        placeholder="Search by student name"
+        value="{{ search or '' }}"
+        style="padding:8px; width:250px; border-radius:5px; border:1px solid #ccc;"
+    >
+    <button type="submit" class="verify-btn">Search</button>
+    <a href="/dashboard" class="logout" style="background:#777;">Reset</a>
+</form>
+
+<table>
+
+<tr>
+    <th>Name</th>
+    <th>College</th>
+    <th>Register No</th>
+    <th>Email</th>
+    <th>Phone</th>
+    <th>Department</th>
+    <th>Year</th>
+    <th>Tech Event</th>
+    <th>Non-Tech Event</th>
+    <th>Payment Method</th>
+    <th>Proof</th>
+    <th>Status</th>
+    <th>Registered Date & Time</th>
+    <th>Attendance</th>
+    <th>Action</th>
+</tr>
+
+{% for r in data %}
+
+<tr>
+
+```
+<td>{{ r.student_name }}</td>
+<td>{{ r.college }}</td>
+<td>{{ r.reg_no }}</td>
+<td>{{ r.email }}</td>
+<td>{{ r.phone }}</td>
+<td>{{ r.department }}</td>
+<td>{{ r.year }}</td>
+<td>{{ r.tech_event }}</td>
+<td>{{ r.nontech_event }}</td>
+<td>{{ r.payment_method }}</td>
+
+<!-- Proof -->
+<td>
+    {% if r.payment_proof %}
+        <a href="/static/uploads/{{ r.payment_proof }}" target="_blank">View</a>
+    {% else %}
+        Cash
+    {% endif %}
+</td>
+
+<!-- Payment Status -->
+<td class="{% if r.payment_status=='Pending' %}status-pending{% else %}status-verified{% endif %}">
+    {{ r.payment_status }}
+</td>
+
+<!-- 🕒 Registered Time -->
+<td>
+    {% if r.created_at %}
+        {{ r.created_at.strftime("%d-%m-%Y %I:%M %p") }}
+    {% else %}
+        -
+    {% endif %}
+</td>
+
+<!-- ✅ Attendance -->
+<td>
+    {% if r.attendance == 1 %}
+        <span style="color:green;">Present</span><br>
+
+        {% if r.attendance_time %}
+            <small>
+            {{ r.attendance_time.strftime("%d-%m-%Y %I:%M %p") }}
+            </small>
+        {% endif %}
+
+    {% else %}
+        <span style="color:red;">Absent</span>
+    {% endif %}
+</td>
+
+<!-- 🔘 Action -->
+<td>
+    {% if r.payment_status == 'Pending' %}
+        <a class="verify-btn" href="/verify/{{ r.id }}">Verify</a>
+    {% else %}
+        ✔
+    {% endif %}
+</td>
+<td>
+            <!-- VERIFY -->
+            <a href="/verify/{{ r.id }}">
+                <button style="background:green;color:white;">
+                    Verify
+                </button>
+            </a>
+
+            <!-- REJECT -->
+            <a href="/reject/{{ r.id }}">
+                <button style="background:orange;color:white;">
+                    Reject
+                </button>
+            </a>
+
+            <!-- DELETE -->
+            <a href="/delete/{{ r.id }}"
+               onclick="return confirm('Delete this record?')">
+                <button style="background:red;color:white;">
+                    Delete
+                </button>
+            </a>
+        </td>
+
+</tr>
+{% endfor %}
+
+</table>
+
+<br>
+
+<a href="/export" class="verify-btn">
+    Export to Excel
+</a>
+
+</body>
+</html>
