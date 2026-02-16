@@ -1,5 +1,8 @@
-flask
-mysql
-openpyxl
-flask_mail
-werkzeugck
+Flask==3.0.0
+mysql-connector-python==8.3.0
+qrcode==7.4.2
+pillow==10.2.0
+openpyxl==3.1.2
+werkzeug==3.0.1
+gunicorn==21.2.0
+flask-mail==0.9.1
