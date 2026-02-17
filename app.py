@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, send_file,flash
+from flask import Flask, render_template, request, redirect, url_for, session, send_file, flash
 import mysql.connector, os, io, qrcode
 from openpyxl import Workbook
 from werkzeug.utils import secure_filename
@@ -14,13 +14,15 @@ QR_FOLDER = "static/qr"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(QR_FOLDER, exist_ok=True)
 
-# ---------- DATABASE ----------
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Kishore!1234",
-    database="symposium_db"
-)
+# ---------- DATABASE FUNCTION (FreeDB) ----------
+def get_db():
+    return mysql.connector.connect(
+        host="sql.freedb.tech",
+        user="freedb_kishore",          # ← your DB username
+        password="YOUR_DB_PASSWORD",   # ← change this
+        database="freedb_symposium_db",# ← your DB name
+        port=3306
+    )
 
 # ---------- ADMIN ----------
 ADMIN_USERNAME = "admin"
@@ -35,19 +37,18 @@ def index():
         file = request.files.get("payment_proof")
         filename = None
 
-        # ❌ BLOCK ONLINE PAYMENT WITHOUT PROOF
         if payment_method in ["GPay", "PhonePe", "Paytm"]:
             if not file or file.filename == "":
                 flash("❌ Payment proof is required", "danger")
                 return redirect("/")
 
-        # ✅ SAVE FILE IF EXISTS
         if file and file.filename:
             filename = secure_filename(file.filename)
             file.save(os.path.join(UPLOAD_FOLDER, filename))
 
-        # ✅ INSERT INTO DATABASE
+        db = get_db()
         cursor = db.cursor()
+
         cursor.execute("""
             INSERT INTO registrations
             (student_name, college, reg_no, email, phone, department, year,
@@ -67,11 +68,15 @@ def index():
             payment_method,
             filename
         ))
+
         db.commit()
+        cursor.close()
+        db.close()
 
         return redirect("/success")
 
     return render_template("index.html")
+
 # ================= SUCCESS =================
 @app.route("/success")
 def success():
@@ -98,7 +103,9 @@ def dashboard():
     if not session.get("admin"):
         return redirect("/admin")
 
+    db = get_db()
     cursor = db.cursor(dictionary=True)
+
     search = request.form.get("search")
 
     if search:
@@ -110,6 +117,10 @@ def dashboard():
         cursor.execute("SELECT * FROM registrations ORDER BY id DESC")
 
     data = cursor.fetchall()
+
+    cursor.close()
+    db.close()
+
     return render_template("admin_dashboard.html", data=data, search=search)
 
 # ================= VERIFY =================
@@ -118,20 +129,18 @@ def verify(id):
     if not session.get("admin"):
         return redirect(url_for("admin_login"))
 
+    db = get_db()
     cursor = db.cursor(dictionary=True)
 
-    # Get student email + name
     cursor.execute("SELECT student_name, email FROM registrations WHERE id=%s", (id,))
     student = cursor.fetchone()
 
-    # Update payment status
     cursor.execute(
         "UPDATE registrations SET payment_status='Verified' WHERE id=%s",
         (id,)
     )
     db.commit()
 
-    # ---------------- SEND EMAIL ----------------
     if student:
         msg = Message(
             subject="Symposium Registration Verified ✅",
@@ -144,16 +153,15 @@ Hello {student['student_name']},
 
 Your symposium registration has been VERIFIED successfully ✅
 
-You can participate in the events.
-
 Thank you,
 Symposium Team
 """
-
         mail.send(msg)
 
-    return redirect(url_for("dashboard"))
+    cursor.close()
+    db.close()
 
+    return redirect(url_for("dashboard"))
 
 # ================= REJECT =================
 @app.route("/reject/<int:id>")
@@ -161,6 +169,7 @@ def reject(id):
     if not session.get("admin"):
         return redirect(url_for("admin_login"))
 
+    db = get_db()
     cursor = db.cursor(dictionary=True)
 
     cursor.execute("SELECT student_name, email FROM registrations WHERE id=%s", (id,))
@@ -182,19 +191,18 @@ def reject(id):
         msg.body = f"""
 Hello {student['student_name']},
 
-Sorry ❌
+Your registration was REJECTED ❌
 
-Your symposium registration was REJECTED.
-
-Please contact the event coordinator.
+Contact coordinator.
 
 Symposium Team
 """
-
         mail.send(msg)
 
-    return redirect(url_for("dashboard"))
+    cursor.close()
+    db.close()
 
+    return redirect(url_for("dashboard"))
 
 # ================= DELETE =================
 @app.route("/delete/<int:id>")
@@ -202,9 +210,14 @@ def delete(id):
     if not session.get("admin"):
         return redirect("/admin")
 
+    db = get_db()
     cursor = db.cursor()
+
     cursor.execute("DELETE FROM registrations WHERE id=%s", (id,))
     db.commit()
+
+    cursor.close()
+    db.close()
 
     flash("Registration deleted", "danger")
     return redirect("/dashboard")
@@ -212,15 +225,20 @@ def delete(id):
 # ================= ATTENDANCE =================
 @app.route("/attendance/<int:id>")
 def attendance(id):
+    db = get_db()
     cursor = db.cursor()
+
     cursor.execute("""
         UPDATE registrations
         SET attendance=1, attendance_time=NOW()
         WHERE id=%s AND attendance=0
     """, (id,))
-    db.commit()
-    return "<h2 style='text-align:center;color:green'>Attendance Marked</h2>"
 
+    db.commit()
+    cursor.close()
+    db.close()
+
+    return "<h2 style='text-align:center;color:green'>Attendance Marked</h2>"
 
 # ================= EXPORT =================
 @app.route("/export")
@@ -228,22 +246,13 @@ def export():
     if not session.get("admin"):
         return redirect("/admin")
 
+    db = get_db()
     cursor = db.cursor()
+
     cursor.execute("""
-        SELECT 
-            student_name,
-            college,
-            reg_no,
-            email,
-            phone,
-            department,
-            year,
-            tech_event,
-            nontech_event,
-            payment_method,
-            payment_status,
-            attendance,
-            created_at
+        SELECT student_name,college,reg_no,email,phone,
+               department,year,tech_event,nontech_event,
+               payment_method,payment_status,attendance,created_at
         FROM registrations
         ORDER BY id DESC
     """)
@@ -254,19 +263,18 @@ def export():
     ws = wb.active
     ws.title = "Registrations"
 
-    # Header row
     ws.append([
-        "Name", "College", "Register No", "Email", "Phone",
-        "Department", "Year", "Tech Event", "Non-Tech Event",
-        "Payment Method", "Payment Status", "Attendance", "Registered At"
+        "Name","College","Reg No","Email","Phone",
+        "Dept","Year","Tech","NonTech",
+        "Payment","Status","Attendance","Registered At"
     ])
 
     for r in rows:
         ws.append([
-            r[0], r[1], r[2], r[3], r[4],
-            r[5], r[6], r[7], r[8],
-            r[9], r[10],
-            "Present" if r[11] == 1 else "Absent",
+            r[0],r[1],r[2],r[3],r[4],
+            r[5],r[6],r[7],r[8],
+            r[9],r[10],
+            "Present" if r[11]==1 else "Absent",
             r[12]
         ])
 
@@ -274,22 +282,24 @@ def export():
     wb.save(file)
     file.seek(0)
 
+    cursor.close()
+    db.close()
+
     return send_file(
         file,
         as_attachment=True,
         download_name="symposium_registrations.xlsx",
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
-# -------------------- EMAIL CONFIG --------------------
+
+# ---------------- EMAIL CONFIG ----------------
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 587
 app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USE_SSL"] = False
 app.config["MAIL_USERNAME"] = "eeespartans08@gmail.com"
-app.config['MAIL_PASSWORD'] = 'tnsb sglw xzbm xekk'
+app.config["MAIL_PASSWORD"] = "tnsb sglw xzbm xekk"
 
 mail = Mail(app)
-
 
 # ================= LOGOUT =================
 @app.route("/logout")
@@ -299,4 +309,4 @@ def logout():
 
 # ================= RUN =================
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=10000, debug=False)
