@@ -19,7 +19,7 @@ def get_db():
     return mysql.connector.connect(
         host="sql.freedb.tech",
         user="freedb_kishore",          # ← your DB username
-        password="YOUR_DB_PASSWORD",   # ← change this
+        password="4Wv9wYM@X9Y8$VM",   # ← change this
         database="freedb_symposium_db",# ← your DB name
         port=3306
     )
